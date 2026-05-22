@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - StaySphere{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        {% if profile.profile_picture %}
+                            <img src="{{ profile.profile_picture.url }}" alt="Profile" class="rounded-circle mb-3" style="width: 80px; height: 80px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                                {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
+                            </div>
+                        {% endif %}
+                        <h6 class="fw-bold">{{ user.get_full_name|default:user.username }}</h6>
+                        <small class="text-muted">{{ profile.get_role_display }}</small>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'customer_dashboard' %}" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-home me-2"></i>Dashboard
+                        </a>
+                        <a href="{% url 'profile' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-user me-2"></i>Profile
+                        </a>
+                        <a href="{% url 'room_list' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-bed me-2"></i>Book Room
+                        </a>
+                        <a href="{% url 'restaurant_home' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-utensils me-2"></i>Restaurant
+                        </a>
+                        <a href="{% url 'facilities_home' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-swimming-pool me-2"></i>Facilities
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <!-- Welcome Section -->
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-3">Welcome back, {{ user.first_name|default:user.username }}!</h4>
+                    <p class="text-muted mb-0">Manage your bookings and explore our services</p>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card shadow text-center">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-calendar-check fa-2x text-primary"></i>
+                            </div>
+                            <h5 class="fw-bold">{{ bookings|length }}</h5>
+                            <p class="text-muted mb-0">Total Bookings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow text-center">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-clock fa-2x text-warning"></i>
+                            </div>
+                            <h5 class="fw-bold">{{ bookings|length }}</h5>
+                            <p class="text-muted mb-0">Upcoming</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold">Your Bookings</h5>
+                        <a href="{% url 'room_list' %}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i>New Booking
+                        </a>
+                    </div>
+                    
+                    {% if bookings %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Room</th>
+                                        <th>Check-in</th>
+                                        <th>Check-out</th>
+                                        <th>Status</th>
+                                        <th>Amount</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in bookings %}
+                                        <tr>
+                                            <td><strong>#{{ booking.id }}</strong></td>
+                                            <td>{{ booking.room.room_number }} - {{ booking.room.category.name }}</td>
+                                            <td>{{ booking.check_in }}</td>
+                                            <td>{{ booking.check_out }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ 
+                                                    'warning' if booking.status == 'pending' else
+                                                    'success' if booking.status == 'confirmed' else
+                                                    'info' if booking.status == 'checked_in' else
+                                                    'secondary' if booking.status == 'checked_out' else
+                                                    'danger'
+                                                }}">
+                                                    {{ booking.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>₹{{ booking.total_amount }}</td>
+                                            <td>
+                                                <span class="text-muted small">No actions</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-calendar fa-3x text-muted mb-3"></i>
+                            <h6 class="text-muted">No bookings yet</h6>
+                            <p class="text-muted">Book your first room to get started!</p>
+                            <a href="{% url 'room_list' %}" class="btn btn-primary">
+                                <i class="fas fa-bed me-2"></i>Book a Room
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.list-group-item {
+    border: none;
+    border-radius: 10px !important;
+    margin-bottom: 5px;
+}
+
+.list-group-item.active {
+    background: linear-gradient(135deg, var(--primary-color), var(--teal-color));
+    border: none;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+</style>
+{% endblock %}

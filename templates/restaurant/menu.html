@@ -1,0 +1,252 @@
+{% extends 'base.html' %}
+
+{% block title %}Menu - StaySphere Restaurant{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Our Menu</h1>
+        <p class="lead text-muted">Explore our delicious multi-cuisine offerings</p>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <label for="search" class="form-label">Search Items</label>
+                    <input type="text" class="form-control" id="search" name="search" 
+                           value="{{ search_query }}" placeholder="Search dishes...">
+                </div>
+                <div class="col-md-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" id="category" name="category">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" 
+                                    {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="type" class="form-label">Food Type</label>
+                    <select class="form-select" id="type" name="type">
+                        <option value="">All Types</option>
+                        <option value="veg" {% if selected_type == 'veg' %}selected{% endif %}>Vegetarian</option>
+                        <option value="non_veg" {% if selected_type == 'non_veg' %}selected{% endif %}>Non-Vegetarian</option>
+                        <option value="vegan" {% if selected_type == 'vegan' %}selected{% endif %}>Vegan</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill">
+                            <i class="fas fa-search me-2"></i>Filter
+                        </button>
+                        <a href="{% url 'menu' %}" class="btn btn-outline-secondary">Clear</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cart Summary -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">Cart Items</h6>
+                        <span id="cartCount" class="badge bg-primary">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">Total Amount</h6>
+                        <span id="cartTotal" class="fw-bold text-primary">₹0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Items Grid -->
+    {% if food_items %}
+        <div class="row">
+            {% for item in food_items %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card menu-card h-100">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x300" class="card-img-top" alt="{{ item.name }}">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title">{{ item.name }}</h5>
+                                <span class="badge bg-{{ 
+                                    'success' if item.food_type == 'veg' else
+                                    'danger' if item.food_type == 'non_veg' else
+                                    'warning'
+                                }}">
+                                    {{ item.get_food_type_display }}
+                                </span>
+                            </div>
+                            <p class="card-text text-muted small">{{ item.description }}</p>
+                            
+                            <div class="menu-features mb-3">
+                                <span class="badge bg-info me-2">
+                                    <i class="fas fa-clock me-1"></i>{{ item.preparation_time }} min
+                                </span>
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-utensils me-1"></i>{{ item.category.name }}
+                                </span>
+                            </div>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="price-tag">₹{{ item.price }}</span>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary add-to-cart-btn" 
+                                            data-item-id="{{ item.id }}"
+                                            data-item-name="{{ item.name }}"
+                                            data-item-price="{{ item.price }}">
+                                        <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-utensils fa-3x text-muted"></i>
+            </div>
+            <h3 class="text-muted">No items found</h3>
+            <p class="text-muted">Try adjusting your search criteria or filters.</p>
+            <a href="{% url 'menu' %}" class="btn btn-primary">View All Items</a>
+        </div>
+    {% endif %}
+
+    <!-- Cart Actions -->
+    <div class="text-center mt-5">
+        <a href="{% url 'cart' %}" class="btn btn-success btn-lg me-3">
+            <i class="fas fa-shopping-cart me-2"></i>View Cart
+        </a>
+        <a href="{% url 'restaurant_home' %}" class="btn btn-outline-secondary btn-lg">
+            <i class="fas fa-arrow-left me-2"></i>Back to Restaurant
+        </a>
+    </div>
+</div>
+
+<style>
+.menu-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.menu-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.price-tag {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.add-to-cart-btn {
+    border-radius: 25px;
+    font-weight: 500;
+}
+
+.add-to-cart-btn:hover {
+    transform: translateY(-2px);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load cart from localStorage
+    function updateCartDisplay() {
+        const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+        const cartCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+        const cartTotal = Object.entries(cart).reduce((sum, [id, qty]) => {
+            const price = document.querySelector(`[data-item-id="${id}"]`)?.dataset.itemPrice || 0;
+            return sum + (parseFloat(price) * qty);
+        }, 0);
+        
+        document.getElementById('cartCount').textContent = cartCount;
+        document.getElementById('cartTotal').textContent = `₹${cartTotal.toFixed(2)}`;
+    }
+    
+    // Add to cart functionality
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', async function() {
+            const itemId = this.dataset.itemId;
+            const itemName = this.dataset.itemName;
+            const itemPrice = this.dataset.itemPrice;
+            
+            // Get cart from localStorage
+            const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+            
+            // Add item to cart
+            if (cart[itemId]) {
+                cart[itemId] += 1;
+            } else {
+                cart[itemId] = 1;
+            }
+            
+            // Save cart to localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            // Update display
+            updateCartDisplay();
+            
+            // Show feedback
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-check me-2"></i>Added!';
+            this.classList.add('btn-success');
+            this.classList.remove('btn-primary');
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = originalText;
+                this.classList.remove('btn-success');
+                this.classList.add('btn-primary');
+                this.disabled = false;
+            }, 2000);
+        });
+    });
+    
+    // Initial cart display
+    updateCartDisplay();
+});
+</script>
+{% endblock %}

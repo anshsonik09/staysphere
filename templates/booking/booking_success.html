@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Booking Success - StaySphere{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle fa-4x text-success"></i>
+                    </div>
+                    <h2 class="fw-bold mb-3">Booking Confirmed!</h2>
+                    <p class="lead text-muted mb-4">Your room has been successfully booked</p>
+                    
+                    <div class="alert alert-success text-start">
+                        <h6><i class="fas fa-receipt me-2"></i>Booking Confirmation</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Booking ID:</strong> #{{ booking.id }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Room:</strong> {{ booking.room.room_number }} - {{ booking.room.category.name }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Check-in:</strong> {{ booking.check_in }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Check-out:</strong> {{ booking.check_out }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Guests:</strong> {{ booking.adults }} Adult{{ booking.adults|pluralize }}
+                                {% if booking.children %}, {{ booking.children }} Child{{ booking.children|pluralize }}{% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Total Amount:</strong> <span class="fw-bold">₹{{ booking.total_amount }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info text-start">
+                        <h6><i class="fas fa-info-circle me-2"></i>Next Steps</h6>
+                        <ul class="mb-0">
+                            <li>Please arrive at the hotel by 2:00 PM on check-in date</li>
+                            <li>Carry valid ID proof and this booking confirmation</li>
+                            <li>Room will be held until 6:00 PM on check-in date</li>
+                            <li>For any changes, contact our reception desk</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <a href="{% url 'customer_dashboard' %}" class="btn btn-primary btn-lg flex-fill">
+                            <i class="fas fa-tachometer-alt me-2"></i>View Dashboard
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg flex-fill">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.btn-lg {
+    border-radius: 25px;
+    padding: 12px;
+    font-weight: 500;
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+</style>
+{% endblock %}

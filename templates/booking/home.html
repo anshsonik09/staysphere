@@ -1,0 +1,443 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - StaySphere{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Enhanced Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') center/cover;
+    opacity: 0.3;
+    z-index: 0;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(45deg, #fff, #f8f9fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.hero-buttons .btn {
+    padding: 15px 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.hero-buttons .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Enhanced Features Section */
+.feature-box {
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.feature-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.feature-box i {
+    font-size: 3rem;
+    color: #667eea;
+    margin-bottom: 20px;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.feature-box:hover i {
+    transform: scale(1.2);
+    color: #764ba2;
+}
+
+.feature-box h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+/* Stats Section */
+.stats-section {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 80px 0;
+}
+
+.stat-box {
+    text-align: center;
+    padding: 30px;
+}
+
+.stat-box .counter {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #3498db;
+    margin-bottom: 10px;
+}
+
+.stat-box h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    padding: 80px 0;
+    color: white;
+    text-align: center;
+}
+
+.cta-section h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.cta-section p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+/* Testimonials Section */
+.testimonial-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin: 20px 0;
+    transition: all 0.3s ease;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.testimonial-content {
+    font-style: italic;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.author-info h5 {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.author-info small {
+    color: #7f8c8d;
+}
+
+/* Floating Elements */
+.floating-element {
+    position: absolute;
+    animation: floating 3s ease-in-out infinite;
+}
+
+.floating-1 {
+    top: 20%;
+    right: 10%;
+    animation-delay: 0s;
+}
+
+.floating-2 {
+    bottom: 20%;
+    left: 10%;
+    animation-delay: 1s;
+}
+
+@keyframes floating {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .hero-buttons .btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+    
+    .stat-box .counter {
+        font-size: 2rem;
+    }
+    
+    .cta-section h2 {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Enhanced Hero Section -->
+<section class="hero-section">
+    <div class="floating-element floating-1">
+        <i class="fas fa-hotel fa-3x opacity-25"></i>
+    </div>
+    <div class="floating-element floating-2">
+        <i class="fas fa-utensils fa-3x opacity-25"></i>
+    </div>
+    
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="hero-content" data-aos="fade-right">
+                    <h1 class="hero-title">Welcome to StaySphere</h1>
+                    <p class="hero-subtitle">Smart Stay, Better Experience. Discover luxury, comfort, and convenience at our premium hotel.</p>
+                    <div class="hero-buttons">
+                        <a href="{% url 'room_list' %}" class="btn btn-light btn-lg me-3">
+                            <i class="fas fa-bed me-2"></i>Book Now
+                        </a>
+                        <a href="{% url 'restaurant_home' %}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-utensils me-2"></i>Order Food
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div data-aos="fade-left">
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                         alt="Hotel Luxury" class="img-fluid rounded-3 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Enhanced Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold gradient-text">Why Choose StaySphere?</h2>
+            <p class="lead text-muted">Experience the best in hospitality with our premium services</p>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-box">
+                    <i class="fas fa-bed"></i>
+                    <h4>Luxury Rooms</h4>
+                    <p class="text-muted">Spacious and elegantly designed rooms with modern amenities and stunning views</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-box">
+                    <i class="fas fa-utensils"></i>
+                    <h4>Fine Dining</h4>
+                    <p class="text-muted">Exceptional culinary experience with multi-cuisine restaurant and room service</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-box">
+                    <i class="fas fa-swimming-pool"></i>
+                    <h4>Premium Facilities</h4>
+                    <p class="text-muted">State-of-the-art facilities including pool, gym, spa, and entertainment zones</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-box">
+                    <i class="fas fa-wifi"></i>
+                    <h4>Smart Technology</h4>
+                    <p class="text-muted">High-speed WiFi, smart room controls, and digital concierge services</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-box">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>24/7 Security</h4>
+                    <p class="text-muted">Round-the-clock security and surveillance for your peace of mind</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="600">
+                <div class="feature-box">
+                    <i class="fas fa-concierge-bell"></i>
+                    <h4>Concierge Service</h4>
+                    <p class="text-muted">Personalized concierge services to make your stay memorable</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-6 mb-4" data-aos="fade-up">
+                <div class="stat-box">
+                    <div class="counter" data-target="150">0</div>
+                    <h4>Luxury Rooms</h4>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-box">
+                    <div class="counter" data-target="50">0</div>
+                    <h4>Expert Chefs</h4>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-box">
+                    <div class="counter" data-target="10000">0</div>
+                    <h4>Happy Guests</h4>
+                </div>
+            </div>
+            <div class="col-md-3 col-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-box">
+                    <div class="counter" data-target="15">0</div>
+                    <h4>Awards Won</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="display-5 fw-bold gradient-text">What Our Guests Say</h2>
+            <p class="lead text-muted">Real experiences from our valued customers</p>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        "Amazing experience! The rooms were luxurious and the service was exceptional. Will definitely come back!"
+                    </div>
+                    <div class="testimonial-author">
+                        <img src=""alt="sourbh agase" class="author-avatar">
+                        <div class="author-info">
+                            <h5>Sourbh agase</h5>
+                            <small>Business Traveler</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        "The restaurant is outstanding! Great food and atmosphere. The facilities are world-class."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="" alt="Devjeet singh " class="author-avatar">
+                        <div class="author-info">
+                            <h5>Devjeet singh</h5>
+                            <small>Food Critic</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        "Perfect for families! Kids loved the pool and gaming zone. Staff was very helpful and caring."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="" alt="Ansh sonik" class="author-avatar">
+                        <div class="author-info">
+                            <h5>Ansh sonik</h5>
+                            <small>Family Vacation</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div data-aos="zoom-in">
+            <h2>Ready for Your Perfect Stay?</h2>
+            <p>Book now and enjoy exclusive discounts on your first booking!</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="{% url 'room_list' %}" class="btn btn-light btn-lg">
+                    <i class="fas fa-calendar-check me-2"></i>Book Your Stay
+                </a>
+                <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-phone me-2"></i>Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

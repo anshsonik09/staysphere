@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Restaurant - StaySphere{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Our Restaurant</h1>
+        <p class="lead text-muted">Experience culinary excellence with our multi-cuisine offerings</p>
+    </div>
+
+    <!-- Featured Items Section -->
+    <div class="mb-5">
+        <h3 class="fw-bold mb-4">Featured Dishes</h3>
+        <div class="row">
+            {% for item in featured_items %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card menu-card h-100">
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/400x300" class="card-img-top" alt="{{ item.name }}">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title">{{ item.name }}</h5>
+                                <span class="badge bg-{{ 
+                                    'success' if item.food_type == 'veg' else
+                                    'danger' if item.food_type == 'non_veg' else
+                                    'warning'
+                                }}">
+                                    {{ item.get_food_type_display }}
+                                </span>
+                            </div>
+                            <p class="card-text text-muted small">{{ item.description }}</p>
+                            
+                            <div class="menu-features mb-3">
+                                <span class="badge bg-info me-2">
+                                    <i class="fas fa-clock me-1"></i>{{ item.preparation_time }} min
+                                </span>
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-utensils me-1"></i>{{ item.category.name }}
+                                </span>
+                            </div>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="price-tag">₹{{ item.price }}</span>
+                                </div>
+                                <div class="d-grid">
+                                    <a href="{% url 'menu' %}" class="btn btn-primary">
+                                        <i class="fas fa-utensils me-2"></i>View Full Menu
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="text-center py-4">
+                        <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No featured items available</h5>
+                        <p class="text-muted">Check back later for our chef's special selections!</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Restaurant Services -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-utensils fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Dine-in</h5>
+                    <p class="card-text">Enjoy our comfortable dining atmosphere with excellent service</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-truck fa-3x text-success"></i>
+                    </div>
+                    <h5 class="card-title">Room Service</h5>
+                    <p class="card-text">Order delicious food delivered right to your room</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-calendar fa-3x text-warning"></i>
+                    </div>
+                    <h5 class="card-title">Table Reservation</h5>
+                    <p class="card-text">Reserve your table in advance for special occasions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="text-center">
+        <h4 class="fw-bold mb-4">Quick Actions</h4>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'menu' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-book-open me-2"></i>View Full Menu
+            </a>
+            <a href="{% url 'cart' %}" class="btn btn-success btn-lg">
+                <i class="fas fa-shopping-cart me-2"></i>My Cart
+            </a>
+            <a href="{% url 'table_reservation' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-calendar-plus me-2"></i>Reserve Table
+            </a>
+        </div>
+    </div>
+
+    <!-- Restaurant Info -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-info-circle me-2"></i>Restaurant Information
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6><i class="fas fa-clock text-primary me-2"></i>Opening Hours</h6>
+                            <p class="text-muted">Daily: 11:00 AM - 11:00 PM</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h6><i class="fas fa-phone text-success me-2"></i>Contact</h6>
+                            <p class="text-muted">Restaurant: +91 98765 43211</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h6><i class="fas fa-map-marker-alt text-warning me-2"></i>Location</h6>
+                            <p class="text-muted">Ground Floor, Main Building</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h6><i class="fas fa-star text-info me-2"></i>Specialties</h6>
+                            <p class="text-muted">Multi-cuisine, Chef's Special</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.menu-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.menu-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.price-tag {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.btn {
+    border-radius: 25px;
+    font-weight: 500;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+</style>
+{% endblock %}

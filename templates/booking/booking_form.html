@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Room - StaySphere{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Book Your Room</h2>
+                        <p class="text-muted">Fill in the details to complete your booking</p>
+                    </div>
+
+                    {% if room %}
+                        <div class="alert alert-info mb-4">
+                            <h6><i class="fas fa-info-circle me-2"></i>Selected Room</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>Room:</strong> {{ room.room_number }} - {{ room.category.name }}
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Price:</strong> ₹{{ room.category.base_price }}/night
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Max Occupancy:</strong> {{ room.category.max_occupancy }} guests
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Floor:</strong> {{ room.floor }}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="check_in" class="form-label">Check-in Date *</label>
+                                <input type="date" class="form-control" id="check_in" name="check_in" 
+                                       value="{{ request.GET.check_in|default:'' }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="check_out" class="form-label">Check-out Date *</label>
+                                <input type="date" class="form-control" id="check_out" name="check_out" 
+                                       value="{{ request.GET.check_out|default:'' }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="adults" class="form-label">Adults *</label>
+                                <select class="form-select" id="adults" name="adults" required>
+                                    <option value="1" selected>1 Adult</option>
+                                    <option value="2">2 Adults</option>
+                                    <option value="3">3 Adults</option>
+                                    <option value="4">4 Adults</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="children" class="form-label">Children</label>
+                                <select class="form-select" id="children" name="children">
+                                    <option value="0" selected>No Children</option>
+                                    <option value="1">1 Child</option>
+                                    <option value="2">2 Children</option>
+                                    <option value="3">3 Children</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {% if room %}
+                            <input type="hidden" name="room" value="{{ room.id }}">
+                        {% else %}
+                            <div class="mb-3">
+                                <label for="room" class="form-label">Select Room *</label>
+                                <select class="form-select" id="room" name="room" required>
+                                    <option value="">Choose a room...</option>
+                                    {% for room_option in rooms %}
+                                        <option value="{{ room_option.id }}">{{ room_option.room_number }} - {{ room_option.category.name }} (₹{{ room_option.category.base_price }}/night)</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <label for="special_requests" class="form-label">Special Requests</label>
+                            <textarea class="form-control" id="special_requests" name="special_requests" 
+                                      rows="4" placeholder="Any special requirements or requests..."></textarea>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <h6><i class="fas fa-exclamation-triangle me-2"></i>Important Information</h6>
+                            <ul class="mb-0">
+                                <li>Check-in time is 2:00 PM</li>
+                                <li>Check-out time is 11:00 AM</li>
+                                <li>Valid ID proof required at check-in</li>
+                                <li>Booking confirmation will be sent to your registered email</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-primary btn-lg flex-fill">
+                                <i class="fas fa-calendar-check me-2"></i>Proceed to Booking
+                            </button>
+                            <a href="{% url 'room_list' %}" class="btn btn-outline-secondary btn-lg flex-fill">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Rooms
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control, .form-select {
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.btn-lg {
+    border-radius: 25px;
+    padding: 12px;
+    font-weight: 500;
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    const checkInField = document.getElementById('check_in');
+    const checkOutField = document.getElementById('check_out');
+    
+    if (checkInField) {
+        checkInField.min = today;
+    }
+    if (checkOutField) {
+        checkOutField.min = today;
+    }
+    
+    // Update check-out minimum date when check-in changes
+    checkInField?.addEventListener('change', function() {
+        if (this.value) {
+            const checkInDate = new Date(this.value);
+            checkInDate.setDate(checkInDate.getDate() + 1);
+            checkOutField.min = checkInDate.toISOString().split('T')[0];
+        }
+    });
+});
+</script>
+{% endblock %}

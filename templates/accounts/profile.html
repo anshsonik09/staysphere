@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - StaySphere{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-body text-center">
+                    {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 150px; height: 150px; font-size: 3rem;">
+                            {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
+                        </div>
+                    {% endif %}
+                    
+                    <h4>{{ user.get_full_name|default:user.username }}</h4>
+                    <p class="text-muted">{{ profile.get_role_display }}</p>
+                    
+                    <div class="text-start mt-4">
+                        <p><strong>Username:</strong> {{ user.username }}</p>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Phone:</strong> {{ profile.phone|default:"Not provided" }}</p>
+                        <p><strong>Member Since:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+                    </div>
+                    
+                    <a href="{% url 'update_profile' %}" class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <!-- Quick Actions -->
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Actions</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <a href="{% url 'room_list' %}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-bed me-2"></i>Book Room
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="{% url 'restaurant_home' %}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-utensils me-2"></i>Order Food
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="{% url 'facilities_home' %}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-swimming-pool me-2"></i>Book Facilities
+                            </a>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="{% url 'table_reservation' %}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-chair me-2"></i>Reserve Table
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Bookings -->
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Recent Bookings</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Room</th>
+                                    <th>Check-in</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No recent bookings</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'customer_dashboard' %}" class="btn btn-sm btn-outline-primary">View All Bookings</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Address Information -->
+            {% if profile.address %}
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Address Information</h5>
+                    <p class="mb-0">{{ profile.address|linebreaks }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.rounded-circle {
+    border: 4px solid #f8f9fa;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+}
+</style>
+{% endblock %}

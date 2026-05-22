@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}Order History - StaySphere Restaurant{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold">
+                            <i class="fas fa-history me-2"></i>Order History
+                        </h4>
+                        <a href="{% url 'menu' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>New Order
+                        </a>
+                    </div>
+                    
+                    {% if orders %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date & Time</th>
+                                        <th>Type</th>
+                                        <th>Items</th>
+                                        <th>Total Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                        <tr>
+                                            <td><strong>#{{ order.id }}</strong></td>
+                                            <td>{{ order.created_at|date:"d M Y, H:i" }}</td>
+                                            <td>
+                                                <span class="badge bg-info">
+                                                    {{ order.get_order_type_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <small>
+                                                    {% for item in order.items.all %}
+                                                        {{ item.quantity }}x {{ item.food_item.name }}{% if not forloop.last %}, {% endif %}
+                                                    {% endfor %}
+                                                </small>
+                                            </td>
+                                            <td><strong>₹{{ order.total_amount }}</strong></td>
+                                            <td>
+                                                <span class="badge bg-{{ 
+                                                    'warning' if order.status == 'pending' else
+                                                    'info' if order.status == 'preparing' else
+                                                    'success' if order.status == 'ready' else
+                                                    'primary' if order.status == 'delivered' else
+                                                    'danger'
+                                                }}">
+                                                    {{ order.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary" onclick="showOrderDetails('{{ order.id }}')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No orders yet</h5>
+                            <p class="text-muted">Place your first order to see it here!</p>
+                            <a href="{% url 'menu' %}" class="btn btn-primary">
+                                <i class="fas fa-utensils me-2"></i>Browse Menu
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal fade" id="orderDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Order Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="orderDetailsContent">
+                <!-- Order details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+</style>
+
+<script>
+function showOrderDetails(orderId) {
+    // This would typically fetch order details via AJAX
+    // For now, we'll show a simple message
+    document.getElementById('orderDetailsContent').innerHTML = `
+        <div class="text-center">
+            <i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i>
+            <p>Loading order details...</p>
+        </div>
+    `;
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+    modal.show();
+    
+    // Simulate loading (in real app, this would be an AJAX call)
+    setTimeout(() => {
+        document.getElementById('orderDetailsContent').innerHTML = `
+            <div class="alert alert-info">
+                <h6>Order #${orderId}</h6>
+                <p class="mb-0">Detailed order information would be displayed here in a production environment.</p>
+            </div>
+        `;
+    }, 1000);
+}
+</script>
+{% endblock %}

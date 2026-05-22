@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Update Profile - StaySphere{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Update Profile</h2>
+                        <p class="text-muted">Keep your information up to date</p>
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Personal Information -->
+                        <h5 class="mb-3">Personal Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" 
+                                       value="{{ user.first_name }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" 
+                                       value="{{ user.last_name }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ user.email }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" 
+                                   value="{{ profile.phone }}" placeholder="Enter your phone number">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="3" 
+                                      placeholder="Enter your address">{{ profile.address }}</textarea>
+                        </div>
+                        
+                        <!-- Profile Picture -->
+                        <h5 class="mb-3 mt-4">Profile Picture</h5>
+                        <div class="mb-3">
+                            <label for="profile_picture" class="form-label">Upload Profile Picture</label>
+                            <input type="file" class="form-control" id="profile_picture" name="profile_picture" 
+                                   accept="image/*">
+                            {% if profile.profile_picture %}
+                                <div class="mt-2">
+                                    <small class="text-muted">Current: </small>
+                                    <img src="{{ profile.profile_picture.url }}" alt="Current Profile" 
+                                         class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- ID Proof (for staff) -->
+                        {% if profile.is_admin or profile.is_reception %}
+                        <h5 class="mb-3 mt-4">ID Proof</h5>
+                        <div class="mb-3">
+                            <label for="id_proof" class="form-label">Upload ID Proof</label>
+                            <input type="file" class="form-control" id="id_proof" name="id_proof" 
+                                   accept=".pdf,.jpg,.jpeg,.png">
+                            {% if profile.id_proof %}
+                                <div class="mt-2">
+                                    <small class="text-muted">Current: </small>
+                                    <a href="{{ profile.id_proof.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i>View ID Proof
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Account Information -->
+                        <h5 class="mb-3 mt-4">Account Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" value="{{ user.username }}" readonly>
+                                <small class="text-muted">Username cannot be changed</small>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Role</label>
+                                <input type="text" class="form-control" value="{{ profile.get_role_display }}" readonly>
+                                <small class="text-muted">Role assigned by administrator</small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg flex-fill">
+                                <i class="fas fa-save me-2"></i>Save Changes
+                            </button>
+                            <a href="{% url 'profile' %}" class="btn btn-outline-secondary btn-lg flex-fill">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control {
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.btn-lg {
+    border-radius: 25px;
+    padding: 12px;
+    font-weight: 500;
+}
+
+.rounded-circle {
+    border: 2px solid #f8f9fa;
+}
+</style>
+{% endblock %}

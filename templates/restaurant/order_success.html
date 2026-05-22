@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Success - StaySphere Restaurant{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle fa-4x text-success"></i>
+                    </div>
+                    <h2 class="fw-bold mb-3">Order Placed Successfully!</h2>
+                    <p class="lead text-muted mb-4">Your food order has been received and is being prepared</p>
+                    
+                    <div class="alert alert-success text-start">
+                        <h6><i class="fas fa-receipt me-2"></i>Order Details</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Order Status:</strong> <span class="badge bg-warning">Pending</span>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Estimated Time:</strong> 30-45 minutes
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Payment:</strong> Pay at pickup/delivery
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Order Type:</strong> {{ order_type|default:"Dine-in" }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info text-start">
+                        <h6><i class="fas fa-info-circle me-2"></i>What's Next?</h6>
+                        <ul class="mb-0">
+                            <li>Your order is being prepared by our chefs</li>
+                            <li>You'll receive updates on your order status</li>
+                            <li>For dine-in: Please proceed to your reserved table</li>
+                            <li>For room service: Your order will be delivered to your room</li>
+                            <li>For pickup: Order will be ready at the restaurant counter</li>
+                        </ul>
+                    </div>
+
+                    <div class="d-flex gap-3">
+                        <a href="{% url 'order_history' %}" class="btn btn-primary btn-lg flex-fill">
+                            <i class="fas fa-history me-2"></i>View Order History
+                        </a>
+                        <a href="{% url 'menu' %}" class="btn btn-outline-secondary btn-lg flex-fill">
+                            <i class="fas fa-utensils me-2"></i>Order More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.btn-lg {
+    border-radius: 25px;
+    padding: 12px;
+    font-weight: 500;
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+</style>
+{% endblock %}

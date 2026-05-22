@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Place Order - StaySphere Restaurant{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Complete Your Order</h2>
+                        <p class="text-muted">Review your cart and provide order details</p>
+                    </div>
+
+                    <!-- Cart Summary -->
+                    <div class="card mb-4 bg-light">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3">Order Summary</h6>
+                            <div id="cartSummary">
+                                <p class="text-muted">Loading cart items...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="order_type" class="form-label">Order Type *</label>
+                            <select class="form-select" id="order_type" name="order_type" required>
+                                <option value="">Select order type</option>
+                                {% for type_value, type_label in order_types %}
+                                    <option value="{{ type_value }}">{{ type_label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Conditional fields based on order type -->
+                        <div id="tableField" class="mb-4" style="display: none;">
+                            <label for="table" class="form-label">Select Table *</label>
+                            <select class="form-select" id="table" name="table">
+                                <option value="">Select a table</option>
+                                {% for table in tables %}
+                                    <option value="{{ table.id }}">
+                                        Table {{ table.table_number }} (Capacity: {{ table.capacity }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div id="roomField" class="mb-4" style="display: none;">
+                            <label for="room_number" class="form-label">Room Number *</label>
+                            <input type="text" class="form-control" id="room_number" name="room_number" 
+                                   placeholder="Enter your room number">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="special_instructions" class="form-label">Special Instructions</label>
+                            <textarea class="form-control" id="special_instructions" name="special_instructions" 
+                                      rows="4" placeholder="Any special requests or dietary requirements..."></textarea>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>Order Information</h6>
+                            <ul class="mb-0">
+                                <li>Preparation time: 30-45 minutes</li>
+                                <li>Payment: Cash/Card accepted at pickup/delivery</li>
+                                <li>For room service: Additional service charge may apply</li>
+                                <li>For large orders: Please call 2 hours in advance</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-success btn-lg flex-fill">
+                                <i class="fas fa-check-circle me-2"></i>Place Order
+                            </button>
+                            <a href="{% url 'cart' %}" class="btn btn-outline-secondary btn-lg flex-fill">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Cart
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control, .form-select {
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.btn-lg {
+    border-radius: 25px;
+    padding: 12px;
+    font-weight: 500;
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load cart summary
+    loadCartSummary();
+    
+    // Handle order type change
+    const orderTypeSelect = document.getElementById('order_type');
+    const tableField = document.getElementById('tableField');
+    const roomField = document.getElementById('roomField');
+    
+    orderTypeSelect.addEventListener('change', function() {
+        const orderType = this.value;
+        
+        // Hide all conditional fields
+        tableField.style.display = 'none';
+        roomField.style.display = 'none';
+        
+        // Show relevant field based on order type
+        if (orderType === 'dine_in') {
+            tableField.style.display = 'block';
+        } else if (orderType === 'room_service') {
+            roomField.style.display = 'block';
+        }
+    });
+});
+
+function loadCartSummary() {
+    // Get cart from localStorage
+    const cart = JSON.parse(localStorage.getItem('cart') || '{}');
+    const cartSummary = document.getElementById('cartSummary');
+    
+    if (Object.keys(cart).length === 0) {
+        cartSummary.innerHTML = '<p class="text-muted">Your cart is empty</p>';
+        return;
+    }
+    
+    // This would typically fetch cart details from the server
+    // For now, show a summary message
+    const itemCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+    cartSummary.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+            <span><strong>${itemCount}</strong> items in cart</span>
+            <a href="{% url 'cart' %}" class="btn btn-sm btn-outline-primary">View Cart</a>
+        </div>
+    `;
+}
+</script>
+{% endblock %}
